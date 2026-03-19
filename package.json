@@ -1,0 +1,13 @@
+{
+    "name": "my-project",
+    "private": true,
+    "scripts": {
+        "dev": "start cmd /k \"npm run dev --workspace=web\" & start cmd /k \"npm run start:dev --workspace=api\""
+    },
+    "workspaces": [
+        "apps/*"
+    ],
+    "devDependencies": {
+        "concurrently": "^9.2.1"
+    }
+}
