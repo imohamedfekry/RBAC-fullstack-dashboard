@@ -40,4 +40,33 @@ export class RoleRepository {
       });
     });
   }
+  async deleteRole(roleId: bigint) {
+    return this.prisma.$transaction(async (tx) => {
+      const roleToDelete = await tx.role.findUnique({
+        where: { id: roleId },
+        select: { hierarchy: true },
+      });
+      const deletedHierarchy = roleToDelete?.hierarchy!;
+      await tx.role.delete({
+        where: { id: roleId },
+      });
+      await tx.role.updateMany({
+        where: { hierarchy: { gt: deletedHierarchy } },
+        data: {
+          hierarchy: {
+            decrement: 1,
+          },
+        },
+      });
+    });
+  }
+  async getRoleById(roleId: bigint){
+    return await this.prisma.role.findFirst(
+      {
+        where:{
+          id:roleId
+        }
+      }
+    )
+  }
 }

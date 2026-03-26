@@ -36,8 +36,25 @@ export const RESPONSE_MESSAGES = {
     },
     CREATE: {
       code: 'ROLE_CREATED',
-      message: 'Role Created Successfully',
+      message: 'Role created Successfully',
     },
+    DELETE:{
+      SUCCESS:{
+        code: 'ROLE_DELETED',
+        message: 'Role deleted Successfully',
+      },
+      fail:{
+        code:'ROLE_DELETE_FAILED',
+        message:"Role failed to delete"
+      }
+    },
+
+    NOTFOUND: {
+      code: 'ROLE_NOT_FOUND',
+      message: 'Role not found',
+    },
+
+
   },
 } as const;
 
