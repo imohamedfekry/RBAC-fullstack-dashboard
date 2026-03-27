@@ -41,19 +41,21 @@ export const RESPONSE_MESSAGES = {
     DELETE:{
       SUCCESS:{
         code: 'ROLE_DELETED',
-        message: 'Role deleted Successfully',
+        message: 'Role deleted successfully',
       },
       fail:{
         code:'ROLE_DELETE_FAILED',
         message:"Role failed to delete"
       }
     },
-
     NOTFOUND: {
       code: 'ROLE_NOT_FOUND',
       message: 'Role not found',
     },
-
+    UPDATED:{
+      code:'ROLE_UPDATED',
+      message:'Role updated successfully'
+    }
 
   },
 } as const;

@@ -7,20 +7,8 @@ export class UserRepository {
   constructor(private readonly prisma: PrismaService) {}
   async findById(id: bigint) {
     return await this.prisma.user.findFirst({
-      where: { id: id }, // Prisma v5/v6 يستخدم number
-      include: {
-        roles: {
-          include: {
-            role: {
-              include: {
-                permissions: {
-                  include: { permission: true },
-                },
-              },
-            },
-          },
-        },
-      },
+      where: { id: id },
+      include: { roles: true },
     });
   }
   async findUser(user: string) {

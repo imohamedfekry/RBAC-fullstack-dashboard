@@ -10,18 +10,8 @@ export class RoleRepository {
   }
   async findUserRoles(userId: bigint) {
     return await this.prisma.userRole.findMany({
-      where: { id: userId },
-      include: {
-        role: {
-          include: {
-            permissions: {
-              include: {
-                permission: true,
-              },
-            },
-          },
-        },
-      },
+      where: { userId: userId },
+      include: { role: true }, // مهم جدًا
     });
   }
   async createRole(
@@ -60,13 +50,17 @@ export class RoleRepository {
       });
     });
   }
-  async getRoleById(roleId: bigint){
-    return await this.prisma.role.findFirst(
-      {
-        where:{
-          id:roleId
-        }
-      }
-    )
+  async getRoleById(roleId: bigint) {
+    return await this.prisma.role.findFirst({
+      where: {
+        id: roleId,
+      },
+    });
+  }
+  async updateRole(roleId: bigint, data: Omit<Prisma.RoleUpdateInput, 'id'>) {
+    return await this.prisma.role.update({
+      where: { id: roleId },
+      data,
+    });
   }
 }

@@ -1,0 +1,112 @@
+السلام عليكم 👋
+
+ليه سيستم الـ Permissions عندك غالبًا غلط؟ 🤔
+
+وأنا ببني RBAC System
+كنت فاكر إن الموضوع بسيط:
+
+Role
+↳ جواه Permissions
+↳ وكل Permission عبارة عن String
+
+زي:
+
+"USER_CREATE"
+"USER_DELETE"
+"USER_READ"
+
+وكل مرة أعمل check:
+
+```ts
+if (user.permissions.includes("USER_DELETE"))
+```
+
+وكان كله شغال… لحد ما السيستم كبر 💀
+
+المشاكل بدأت تظهر:
+
+* Performance بقى أسوأ (arrays + loops في كل request)
+* صعب تعمل combine لأكتر من permission
+* مفيش hierarchy واضح
+* كل check محتاج logic زيادة
+* ومع الوقت الكود بقى messy جدًا
+
+المشكلة مش في الكود
+المشكلة في الـ Design نفسه
+
+خلينا نبص على الحل الصح 👇
+
+بدل Strings
+نستخدم Bitmask Permissions
+
+يعني إيه؟
+
+كل Permission يبقى رقم Power of 2:
+
+USER_CREATE = 1
+USER_DELETE = 2
+USER_READ = 4
+USER_MANAGE = 8
+
+كده كل Permission ليه bit خاص بيه
+
+دلوقتي بدل ما نخزن Array
+نخزن رقم واحد بس 👇
+
+User عنده:
+CREATE + DELETE
+
+يبقى:
+1 | 2 = 3
+
+طيب نعمل check إزاي؟
+
+```ts
+(userPermissions & USER_DELETE) !== 0
+```
+
+ببساطة:
+
+* & → بتشوف هل الـ bit موجود ولا لا
+* العملية دي O(1) وسريعة جدًا
+
+طب لو عايز check على أكتر من permission؟
+
+```ts
+required = USER_CREATE | USER_DELETE
+
+(userPermissions & required) === required
+```
+
+طيب فين القوة الحقيقية؟ 💡
+
+* تخزين أسرع (رقم واحد بدل array)
+* query أسرع
+* logic أبسط
+* scalable جدًا
+* نفس الفكرة اللي مستخدمة في أنظمة كبيرة زي Discord
+
+بس خد بالك ⚠️
+
+فيه غلطات شائعة:
+
+* متخليش عندك MANAGE + باقي permissions
+  (MANAGE المفروض يشمل الكل)
+
+* لازم كل Permission يبقى Power of 2
+  (1, 2, 4, 8, 16…)
+
+* متستقبلش bitmask من اليوزر
+  استقبل array وحوّلها أنت
+
+الخلاصة 👇
+
+المشكلة مش في إن الكود “بيشتغل”
+المشكلة هل هو “هيستحمل لما السيستم يكبر؟”
+
+Arrays هتشتغل…
+بس Bitmask هو اللي هيكمل معاك على المدى الطويل 🚀
+
+لو بتبني RBAC System
+راجع الـ Design قبل ما تكمل
+هتوفر على نفسك مشاكل كتير بعدين.

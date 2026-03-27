@@ -16,30 +16,13 @@ model User {
   updatedAt DateTime   @updatedAt
 }
 
-model Permission {
-  id          BigInt           @id
-  key         String           @unique
-  description String?
-  roles       RolePermission[]
-}
-
 model Role {
-  id          BigInt           @id
-  name        String           @default("New Role")
+  id          BigInt  @id
+  name        String  @default("New Role")
   description String?
-  hierarchy   Int?             @unique
-  users       UserRole[]
-  permissions RolePermission[]
-}
-
-model RolePermission {
-  id           BigInt     @id @default(autoincrement())
-  roleId       BigInt
-  permissionId BigInt
-  role         Role       @relation(fields: [roleId], references: [id])
-  permission   Permission @relation(fields: [permissionId], references: [id])
-
-  @@unique([roleId, permissionId])
+  hierarchy   Int?    @unique
+  permissions Int @default(0)
+  users UserRole[]
 }
 
 model UserRole {

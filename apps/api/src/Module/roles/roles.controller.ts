@@ -1,30 +1,51 @@
-import { Body, Controller, Delete, Get, Param, Post, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Request,
+} from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { Auth } from 'src/common/decorators/auth-user.decorator';
-import { permissions } from 'src/common/utils/permission';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
-import { crateRoleDto, DeleteRoleDto } from './dto/roles.dto';
+import {
+  crateRoleDto,
+  roleIdParamsDto,
+  updateRoleDto,
+} from './dto/roles.dto';
+import { Permission } from 'src/common/utils/permission';
 
 @Controller('roles')
 @Auth()
 export class RolesController {
   constructor(private readonly RolesService: RolesService) {}
   @Get()
-  @Permissions({ permissions: permissions.ROLES_READ.key })
+  @Permissions({ permissions: Permission.ROLES_READ })
   async getRoles() {
     return this.RolesService.getRoles();
   }
   @Post('create')
-  @Permissions({ permissions: permissions.ROLES_CREATE.key })
+  @Permissions({ permissions: Permission.ROLES_CREATE })
   async createRole(@Body() body: crateRoleDto) {
     return this.RolesService.createRole(body);
   }
   @Delete(':roleId')
-  @Permissions({ permissions: permissions.ROLES_DELETE.key })
-  async DeleteRole(
-    @Param() params: DeleteRoleDto,
-    @Request() request: any
+  @Permissions({ permissions: Permission.ROLES_DELETE })
+  async deleteRole(@Param() params: roleIdParamsDto, @Request() request: any) {
+    return this.RolesService.deleteRole(params, request);
+  }
+  @Patch(':roleId')
+  @Permissions({ permissions: Permission.ROLES_UPDATE })
+  async updateRole(
+    @Param() params: roleIdParamsDto,
+    @Request() request: any,
+    @Body() body: updateRoleDto,
   ) {
-    return this.RolesService.deleteRole(params,request);
+ 
+
+    return this.RolesService.updateRole(params,request,body);
   }
 }

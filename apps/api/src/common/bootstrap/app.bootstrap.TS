@@ -1,9 +1,6 @@
 import { NestApplication } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { BootstrapConfig } from './config/bootstrap.config';
-// import { seedPermissions } from 'prisma/permissions.seed';
-import { PrismaService } from '../database/prisma.service';
-import { seedPermissions } from 'prisma/Seeds/permissions.seed';
 
 export class AppBootstrap {
   static async bootstrap(app: NestApplication) {
@@ -11,10 +8,7 @@ export class AppBootstrap {
 
     // Configure app
     await BootstrapConfig.configureApp(app, configService);
-    // sync
-    const prisma = app.get(PrismaService);
 
-    await seedPermissions(prisma);
     // Get server info
     const serverInfo = BootstrapConfig.getServerInfo(configService);
 

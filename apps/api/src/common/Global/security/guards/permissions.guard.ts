@@ -7,10 +7,10 @@ import {
 import { Reflector } from '@nestjs/core';
 import { PrismaService } from '../../../database/prisma.service';
 import {
-  OWNER_ONLY_KEY,
   PERMISSIONS_KEY,
 } from '../../../decorators/permissions.decorator';
 import { RoleRepository } from 'src/common/database/repositories/Role/Role.repository';
+import { Permission } from 'src/common/utils/permission';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -21,44 +21,22 @@ export class PermissionsGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    if (process.env.DEBUG_GUARDS === 'true') {
-      console.log('[PermissionsGuard] canActivate');
-    }
-    const requiredPermissions = this.reflector.get<string[]>(
+    const requiredPermissions = this.reflector.get<Permission[]>(
       PERMISSIONS_KEY,
-      context.getHandler(),
-    );
-    const ownerOnly = this.reflector.get<boolean>(
-      OWNER_ONLY_KEY,
-      context.getHandler(),
+      context.getHandler()
     );
     if (!requiredPermissions?.length) return true;
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-    if (!user?.id) throw new ForbiddenException('Forbidden resource');
-    if (user.isOwner === true) return true;
-    if (ownerOnly) {
-      throw new ForbiddenException('Insufficient permissions');
-    }
-    // Fetch permissions from DB; do not assume request.user has relations loaded.
+    if (user.isOwner) return true;
     const userRoles = await this.roleRepository.findUserRoles(user.id);
-
-    if (userRoles.length < 1) {
-      throw new ForbiddenException('Insufficient permissions');
-    }
-    const userPermissions = new Set<string>();
+    let userPermissions = 0;
     for (const ur of userRoles) {
-      for (const rp of ur.role.permissions) {
-        const key = rp.permission?.key;
-        if (key) userPermissions.add(key);
-      }
+      userPermissions |= Number(ur.role.permissions); // اجمع كل الصلاحيات
     }
-    if (!userPermissions) {
-      throw new ForbiddenException('Insufficient permissions');
-    }
-    const hasAll = requiredPermissions.every((p) => userPermissions.has(p));
+    const hasAll = requiredPermissions.every(p => (userPermissions & p) === p);
+    if (!hasAll) throw new ForbiddenException('Missing Permissions');
 
-    if (!hasAll) throw new ForbiddenException('Insufficient permissions');
     request['user.roles'] = userRoles;
     return true;
   }
