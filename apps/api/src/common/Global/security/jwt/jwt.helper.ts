@@ -18,7 +18,7 @@ export class JwtHelper {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly userRepository: UserRepository,
-  ) {}
+  ) { }
 
   /**
    * Signs a JWT. Uses `jwt.refreshToken.*` when `payload.type === 'refresh'`, else `jwt.accessToken.*`.
@@ -55,6 +55,7 @@ export class JwtHelper {
       const user = await this.userRepository.findById(userId);
 
       if (!user) return null;
+      if (user.jwtSecret !== decoded.jwtSecret) return null;
 
       return user;
     } catch {

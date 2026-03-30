@@ -9,7 +9,7 @@ import { AuthenticatedRequest, AuthUser } from 'src/common/utils/types';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly jwtHelper: JwtHelper) {}
+  constructor(private readonly jwtHelper: JwtHelper) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     if (process.env.DEBUG_GUARDS === 'true') {
@@ -21,7 +21,6 @@ export class AuthGuard implements CanActivate {
       request.cookies['Authorization'] || request.headers['authorization'];
 
     const user = await this.jwtHelper.VerifyAndGetUser(token);
-
     if (!user) {
       throw new UnauthorizedException('Forbidden resource');
     }

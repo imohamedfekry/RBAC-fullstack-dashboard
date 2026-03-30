@@ -12,6 +12,7 @@ model User {
   password  String
   isOwner   Boolean?
   roles     UserRole[]
+  jwtSecret String?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }

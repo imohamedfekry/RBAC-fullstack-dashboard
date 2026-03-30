@@ -32,4 +32,10 @@ export class UserRepository {
       include: { roles: { include: { role: true } } },
     });
   }
+  async update(id: bigint, data: Prisma.UserUpdateInput) {
+    return await this.prisma.user.update({
+      where: { id },
+      data,
+    });
+  }
 }

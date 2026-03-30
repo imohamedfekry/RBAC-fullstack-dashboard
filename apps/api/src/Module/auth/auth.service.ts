@@ -6,13 +6,14 @@ import { loginDto } from './dto/auth.dto';
 import { verifyHash } from 'src/common/Global/security';
 import { Response } from 'express';
 import { JwtHelper } from 'src/common/Global/security/jwt/jwt.helper';
+import { nextSnowflakeId } from 'src/common/utils/snowflake';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly jwtHelper: JwtHelper,
-  ) {}
+  ) { }
   async Login(body: loginDto, res: Response) {
     // find User
     const user = await this.userRepository.findUser(body.user);
@@ -24,9 +25,14 @@ export class AuthService {
     if (!verifyPassword) {
       return fail(RESPONSE_MESSAGES.AUTH.INVALID_CREDENTIALS);
     }
+    // update user to add jwtsecret
+    const updatedUser = await this.userRepository.update(user.id, {
+      jwtSecret: nextSnowflakeId().toString()
+    })
     // Generate JWT tokens
     const accessToken = this.jwtHelper.generateToken({
       sub: user.id.toString(),
+      jwtSecret: updatedUser.jwtSecret,
       type: 'access',
     });
     const refreshToken = this.jwtHelper.generateToken({
