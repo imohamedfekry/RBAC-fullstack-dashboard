@@ -37,6 +37,7 @@ export class AuthService {
     });
     const refreshToken = this.jwtHelper.generateToken({
       sub: user.id.toString(),
+      jwtSecret: updatedUser.jwtSecret,
       type: 'refresh',
     });
     res.cookie('Authorization', accessToken, {
