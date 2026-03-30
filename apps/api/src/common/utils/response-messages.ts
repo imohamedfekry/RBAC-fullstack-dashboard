@@ -10,11 +10,9 @@ export const RESPONSE_MESSAGES = {
     },
   },
   USER: {
-    PROFILE: {
-      FETCH_SUCCESS: {
-        code: 'USER_PROFILE_FETCHED',
-        message: 'User profile retrieved successfully.',
-      },
+    FETCH_SUCCESS: {
+      code: 'USER_PROFILE_FETCHED',
+      message: 'User profile retrieved successfully.',
     },
     CREATE: {
       SUCCESS: {

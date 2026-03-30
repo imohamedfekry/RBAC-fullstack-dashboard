@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class userRoleReposotory {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
   async add(userId: bigint, roleId: bigint) {
     return this.prisma.userRole.upsert({
       where: {

@@ -9,7 +9,8 @@ import {
 @ValidatorConstraint({ async: false })
 export class IsIdConstraint implements ValidatorConstraintInterface {
   validate(value: any): boolean {
-    return typeof value === 'string' && /^\d{16,19}$/.test(value);
+    const str = String(value);
+    return /^\d{16,19}$/.test(str);
   }
 
   defaultMessage(args: ValidationArguments) {

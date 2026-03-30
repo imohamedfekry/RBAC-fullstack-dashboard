@@ -16,6 +16,16 @@ export class UsersService {
     private readonly userRoleRepository: userRoleReposotory,
     private readonly roleRepository: RoleRepository,
   ) { }
+  async getusers() {
+    const users = await this.UserRepository.find();
+
+    return success(
+      RESPONSE_MESSAGES.USER.FETCH_SUCCESS,
+      plainToInstance(UserProfileDto, users, {
+        excludeExtraneousValues: true,
+      }),
+    );
+  }
   async getProfile(user: AuthUser) {
     const raw = {
       id: user?.id?.toString?.() ?? String(user?.id ?? ''),
@@ -23,11 +33,8 @@ export class UsersService {
       isOwner: Boolean(user?.isOwner),
       roles: Array.isArray(user?.roles) ? user.roles : [],
     };
-
-    // excludeExtraneousValues => احترام @Expose() داخل الـ DTO
-
     return success(
-      RESPONSE_MESSAGES.USER.PROFILE.FETCH_SUCCESS,
+      RESPONSE_MESSAGES.USER.FETCH_SUCCESS,
       plainToInstance(UserProfileDto, raw, {
         excludeExtraneousValues: true,
       }),
@@ -62,6 +69,7 @@ export class UsersService {
         return fail(RESPONSE_MESSAGES.USER.ADD_ROLE.FAIL);
       }
     }
+
     await this.userRoleRepository.add(BigInt(params.userId), BigInt(body.roleId));
     return success(RESPONSE_MESSAGES.USER.ADD_ROLE.SUCCESS);
   }

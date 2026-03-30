@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UserRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
   async findById(id: bigint) {
     return await this.prisma.user.findFirst({
       where: { id: id },
@@ -25,5 +25,11 @@ export class UserRepository {
       ...(select && { select }),
     });
     return user;
+  }
+  async find() {
+    // get users with user roles
+    return await this.prisma.user.findMany({
+      include: { roles: { include: { role: true } } },
+    });
   }
 }

@@ -23,10 +23,12 @@ export function extendPrisma(prisma: PrismaClient) {
         },
         async upsert({ model, args, query }) {
           stripUserIsOwnerFromMutationArgs(model, args);
+          await handleIdsnowflake(model, args); // Need to generate ID for upsert.create
           return query(args);
         },
         async createMany({ model, args, query }) {
           stripUserIsOwnerFromMutationArgs(model, args);
+          await handleIdsnowflake(model, args); // Need to generate IDs for createMany
           return query(args);
         },
         async updateMany({ model, args, query }) {
@@ -64,8 +66,23 @@ function stripUserIsOwnerFromMutationArgs(model: string, args: any) {
 }
 
 async function handleIdsnowflake(model: string, args: any) {
-  if (!args.data?.id) {
-    args.data.id = snowflake.generate().toString();
+  // 1. Single create
+  if (args.data && !args.data.id) {
+    args.data.id = snowflake.generate();
+  }
+
+  // 2. Upsert
+  if (args.create && !args.create.id) {
+    args.create.id = snowflake.generate();
+  }
+
+  // 3. createMany
+  if (args.data && Array.isArray(args.data)) {
+    for (const record of args.data) {
+      if (!record.id) {
+        record.id = snowflake.generate();
+      }
+    }
   }
 }
 

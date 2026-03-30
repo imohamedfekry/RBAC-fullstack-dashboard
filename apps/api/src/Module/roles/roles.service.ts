@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { RoleRepository } from 'src/common/database/repositories/Role/Role.repository';
 import { userRoleReposotory } from 'src/common/database/repositories/User/UserRole.repository';
 import { RESPONSE_MESSAGES } from 'src/common/utils/response-messages';
@@ -10,13 +10,14 @@ import {
   updateRoleDto,
 } from './dto/roles.dto';
 import { canManageRole } from 'src/common/utils/hierarchy.util';
+import { mustHaveToAddPermissionMap } from 'src/common/utils/permission';
 
 @Injectable()
 export class RolesService {
   constructor(
     private readonly roleRepository: RoleRepository,
     private readonly userRoleRepository: userRoleReposotory,
-  ) {}
+  ) { }
 
   async getRoles() {
     const roles = await this.roleRepository.find();
@@ -65,6 +66,19 @@ export class RolesService {
       return fail(RESPONSE_MESSAGES.ROLE.DELETE.fail);
     }
     // todo : انواع برمشنز لازم متضافش إلا لو ال current user معاه البرمشن دي
+    if (body.permissions && !request.user.isOwner) {
+      for (const perm of body.permissions) {
+        const requiredPermission = mustHaveToAddPermissionMap[perm];
+        if (requiredPermission) {
+          const userPermissions = request.user.roles.reduce((acc, ur) => acc | Number(ur.role.permissions || 0), 0);
+          const hasPermission = (userPermissions & requiredPermission) === requiredPermission;
+          if (!hasPermission) {
+            throw new ForbiddenException('Missing Permissions');
+          }
+        };
+
+      }
+    }
     const dataToUpdate = Object.fromEntries(
       Object.entries({
         ...body,

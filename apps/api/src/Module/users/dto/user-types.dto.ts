@@ -28,6 +28,7 @@ export class UserProfileDto {
   @IsBoolean()
   isOwner: boolean;
   @IsArray()
+  @Expose()
   roles: [];
 }
 
@@ -38,7 +39,6 @@ export class RoleIdDto {
   roleId: string;
 }
 export class UserIdDto {
-  @IsString()
   @IsNotEmpty()
   @IsId()
   userId: string;

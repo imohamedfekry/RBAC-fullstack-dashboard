@@ -17,12 +17,12 @@ model User {
 }
 
 model Role {
-  id          BigInt  @id
-  name        String  @default("New Role")
+  id          BigInt     @id
+  name        String     @default("New Role")
   description String?
-  hierarchy   Int?    @unique
-  permissions Int @default(0)
-  users UserRole[]
+  hierarchy   Int?       @unique
+  permissions Int        @default(0)
+  users       UserRole[]
 }
 
 model UserRole {

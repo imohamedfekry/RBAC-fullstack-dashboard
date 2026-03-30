@@ -4,15 +4,9 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class RoleRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
   async find() {
     return await this.prisma.role.findMany();
-  }
-  async findUserRoles(userId: bigint) {
-    return await this.prisma.userRole.findMany({
-      where: { userId: userId },
-      include: { role: true }, // مهم جدًا
-    });
   }
   async createRole(
     data: Omit<Prisma.RoleUncheckedCreateInput, 'id' | 'hierarchy'>,
@@ -54,6 +48,15 @@ export class RoleRepository {
     return await this.prisma.role.findFirst({
       where: {
         id: roleId,
+      },
+    });
+  }
+  async getRolesByIds(roleIds: bigint[]) {
+    return await this.prisma.role.findMany({
+      where: {
+        id: {
+          in: roleIds,
+        },
       },
     });
   }

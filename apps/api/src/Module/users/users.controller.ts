@@ -10,27 +10,32 @@ import type { AuthenticatedRequest } from 'src/common/utils/types';
 @Auth()
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
+  @Get('@everyone')
+  @Permissions({ permissions: [Permission.USER_READ] })
+  async GetUsers() {
+    return this.usersService.getusers();
+  }
   @Get('@me')
   async GetUser(@Request() request: AuthenticatedRequest) {
     return this.usersService.getProfile(request.user);
   }
   @Post('create')
-  @Permissions({ permissions: Permission.USER_CREATE })
+  @Permissions({ permissions: [Permission.USER_CREATE] })
   async CreateUser(@Body() body: CreateUserDto) {
     return this.usersService.crateUser(body);
   }
   @Post('role/:userId')
-  @Permissions({ permissions: Permission.USER_ROLE_MANAGE })
+  @Permissions({ permissions: [Permission.USER_ROLE_MANAGE] })
   async AddRole(
-    @Param('userId') params: UserIdDto,
+    @Param() params: UserIdDto,
     @Body() body: RoleIdDto,
     @Request() request: AuthenticatedRequest,
   ) {
     return this.usersService.addRoleToUser(params, body, request);
   }
-  @Permissions({ permissions: Permission.USER_ROLE_MANAGE })
+  @Permissions({ permissions: [Permission.USER_ROLE_MANAGE] })
   @Delete('role/:userId')
-  async RemoveRoleFromUser(@Param('userId') params: UserIdDto, @Body() body: RoleIdDto, @Request() request: AuthenticatedRequest) {
+  async RemoveRoleFromUser(@Param() params: UserIdDto, @Body() body: RoleIdDto, @Request() request: AuthenticatedRequest) {
     return this.usersService.RemoveRoleFromUser(params, body, request)
   }
 

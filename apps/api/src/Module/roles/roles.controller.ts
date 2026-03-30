@@ -22,31 +22,31 @@ import type { AuthenticatedRequest } from 'src/common/utils/types';
 @Controller('roles')
 @Auth()
 export class RolesController {
-  constructor(private readonly RolesService: RolesService) {}
+  constructor(private readonly RolesService: RolesService) { }
   @Get()
-  @Permissions({ permissions: Permission.ROLES_READ })
+  @Permissions({ permissions: [Permission.ROLES_READ] })
   async getRoles() {
     return this.RolesService.getRoles();
   }
   @Post('create')
-  @Permissions({ permissions: Permission.ROLES_CREATE })
+  @Permissions({ permissions: [Permission.ROLES_CREATE] })
   async createRole(@Body() body: crateRoleDto, @Request() request: AuthenticatedRequest) {
     return this.RolesService.createRole(body, request);
   }
   @Delete(':roleId')
-  @Permissions({ permissions: Permission.ROLES_DELETE })
+  @Permissions({ permissions: [Permission.ROLES_DELETE] })
   async deleteRole(@Param() params: roleIdParamsDto, @Request() request: AuthenticatedRequest) {
     return this.RolesService.deleteRole(params, request);
   }
   @Patch(':roleId')
-  @Permissions({ permissions: Permission.ROLES_UPDATE })
+  @Permissions({ permissions: [Permission.ROLES_UPDATE, Permission.ROLES_MANAGE] })
   async updateRole(
     @Param() params: roleIdParamsDto,
     @Request() request: AuthenticatedRequest,
     @Body() body: updateRoleDto,
   ) {
- 
 
-    return this.RolesService.updateRole(params,request,body);
+
+    return this.RolesService.updateRole(params, request, body);
   }
 }
