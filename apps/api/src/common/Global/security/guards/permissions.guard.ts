@@ -10,6 +10,7 @@ import {
 } from '../../../decorators/permissions.decorator';
 import { Permission } from 'src/common/utils/permission';
 import { userRoleReposotory } from 'src/common/database/repositories/User/UserRole.repository';
+import { AuthenticatedRequest } from 'src/common/utils/types';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -24,7 +25,7 @@ export class PermissionsGuard implements CanActivate {
       context.getHandler()
     );
     if (!requiredPermissions?.length) return true;
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
     const user = request.user;
     if (user.isOwner) return true;
     const userRoles = await this.userRoleReposotory.findUserRoles(user.id);

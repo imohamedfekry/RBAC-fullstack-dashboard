@@ -17,6 +17,7 @@ import {
   updateRoleDto,
 } from './dto/roles.dto';
 import { Permission } from 'src/common/utils/permission';
+import type { AuthenticatedRequest } from 'src/common/utils/types';
 
 @Controller('roles')
 @Auth()
@@ -29,19 +30,19 @@ export class RolesController {
   }
   @Post('create')
   @Permissions({ permissions: Permission.ROLES_CREATE })
-  async createRole(@Body() body: crateRoleDto) {
-    return this.RolesService.createRole(body);
+  async createRole(@Body() body: crateRoleDto, @Request() request: AuthenticatedRequest) {
+    return this.RolesService.createRole(body, request);
   }
   @Delete(':roleId')
   @Permissions({ permissions: Permission.ROLES_DELETE })
-  async deleteRole(@Param() params: roleIdParamsDto, @Request() request: any) {
+  async deleteRole(@Param() params: roleIdParamsDto, @Request() request: AuthenticatedRequest) {
     return this.RolesService.deleteRole(params, request);
   }
   @Patch(':roleId')
   @Permissions({ permissions: Permission.ROLES_UPDATE })
   async updateRole(
     @Param() params: roleIdParamsDto,
-    @Request() request: any,
+    @Request() request: AuthenticatedRequest,
     @Body() body: updateRoleDto,
   ) {
  

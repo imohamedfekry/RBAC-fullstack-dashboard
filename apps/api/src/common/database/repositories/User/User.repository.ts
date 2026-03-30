@@ -8,7 +8,7 @@ export class UserRepository {
   async findById(id: bigint) {
     return await this.prisma.user.findFirst({
       where: { id: id },
-      include: { roles: true },
+      include: { roles: { include: { role: true } } },
     });
   }
   async findUser(user: string) {

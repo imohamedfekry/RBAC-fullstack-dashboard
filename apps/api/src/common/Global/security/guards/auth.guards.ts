@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtHelper } from '../jwt/jwt.helper';
-import { Request } from 'express';
+import { AuthenticatedRequest, AuthUser } from 'src/common/utils/types';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
       console.log('[AuthGuard] canActivate');
     }
     // const type = context.getType();
-    const request = context.switchToHttp().getRequest<Request>();
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
     const token =
       request.cookies['Authorization'] || request.headers['authorization'];
 
@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
     if (!user) {
       throw new UnauthorizedException('Forbidden resource');
     }
-    request['user'] = user;
+    request.user = user as AuthUser;
     return true;
   }
 }
