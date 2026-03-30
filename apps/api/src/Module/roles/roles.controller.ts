@@ -24,17 +24,17 @@ import type { AuthenticatedRequest } from 'src/common/utils/types';
 export class RolesController {
   constructor(private readonly RolesService: RolesService) { }
   @Get()
-  @Permissions({ permissions: [Permission.ROLES_READ] })
+  @Permissions({ permissions: [Permission.ROLES_READ, Permission.ROLES_MANAGE] })
   async getRoles() {
     return this.RolesService.getRoles();
   }
   @Post('create')
-  @Permissions({ permissions: [Permission.ROLES_CREATE] })
+  @Permissions({ permissions: [Permission.ROLES_CREATE, Permission.ROLES_MANAGE] })
   async createRole(@Body() body: crateRoleDto, @Request() request: AuthenticatedRequest) {
     return this.RolesService.createRole(body, request);
   }
   @Delete(':roleId')
-  @Permissions({ permissions: [Permission.ROLES_DELETE] })
+  @Permissions({ permissions: [Permission.ROLES_DELETE, Permission.ROLES_MANAGE] })
   async deleteRole(@Param() params: roleIdParamsDto, @Request() request: AuthenticatedRequest) {
     return this.RolesService.deleteRole(params, request);
   }
