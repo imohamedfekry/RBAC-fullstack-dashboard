@@ -10,7 +10,7 @@ import {
 
 @Injectable()
 export class RolesService {
-  constructor(private readonly roleRepository: RoleRepository) {}
+  constructor(private readonly roleRepository: RoleRepository) { }
 
   async getRoles() {
     const roles = await this.roleRepository.find();
@@ -49,13 +49,13 @@ export class RolesService {
     request: any,
     body: updateRoleDto,
   ) {
-    // check if role exsist
     const exsistRole = await this.roleRepository.getRoleById(
       BigInt(params.roleId),
     );
     if (!exsistRole) {
       return fail(RESPONSE_MESSAGES.ROLE.NOTFOUND);
     }
+    // todo : انواع برمشنز لازم متضافش إلا لو ال current user معاه البرمشن دي
     const dataToUpdate = Object.fromEntries(
       Object.entries({
         ...body,
@@ -64,7 +64,8 @@ export class RolesService {
           : undefined,
       }).filter(([_, value]) => value !== undefined),
     );
-    const updatedRole = await this.roleRepository.updateRole(BigInt(params.roleId),dataToUpdate,);
+
+    const updatedRole = await this.roleRepository.updateRole(BigInt(params.roleId), dataToUpdate);
 
     return success(RESPONSE_MESSAGES.ROLE.UPDATED, updatedRole);
   }

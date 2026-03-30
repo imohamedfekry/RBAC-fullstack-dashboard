@@ -5,19 +5,17 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { PrismaService } from '../../../database/prisma.service';
 import {
   PERMISSIONS_KEY,
 } from '../../../decorators/permissions.decorator';
-import { RoleRepository } from 'src/common/database/repositories/Role/Role.repository';
 import { Permission } from 'src/common/utils/permission';
+import { userRoleReposotory } from 'src/common/database/repositories/User/UserRole.repository';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
-    private readonly prisma: PrismaService,
-    private readonly roleRepository: RoleRepository,
+    private readonly userRoleReposotory : userRoleReposotory
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -29,7 +27,7 @@ export class PermissionsGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
     if (user.isOwner) return true;
-    const userRoles = await this.roleRepository.findUserRoles(user.id);
+    const userRoles = await this.userRoleReposotory.findUserRoles(user.id);
     let userPermissions = 0;
     for (const ur of userRoles) {
       userPermissions |= Number(ur.role.permissions); // اجمع كل الصلاحيات

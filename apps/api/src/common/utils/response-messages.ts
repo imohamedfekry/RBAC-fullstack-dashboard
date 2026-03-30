@@ -28,6 +28,30 @@ export const RESPONSE_MESSAGES = {
         },
       },
     },
+    ADD_ROLE: {
+      SUCCESS: {
+        code: 'ROLE_ADDED_SUCCESS',
+        message: 'Role added successfully to user.',
+      },
+      FAIL: {
+        code: 'ROLE_ADD_FAILED',
+        message: 'Failed to add role to user.',
+      },
+    },
+    REMOVE_ROLE: {
+      SUCCESS: {
+        code: 'ROLE_REMOVED_SUCCESS',
+        message: 'Role removed successfully from user.',
+      },
+      FAIL: {
+        code: 'ROLE_REMOVE_FAILED',
+        message: 'Failed to remove role from user.',
+      }
+    },
+    NOTFOUND: {
+      code: 'USER_NOT_FOUND',
+      message: 'User not found',
+    }
   },
   ROLE: {
     FETCH_SUCCESS: {
@@ -38,23 +62,23 @@ export const RESPONSE_MESSAGES = {
       code: 'ROLE_CREATED',
       message: 'Role created Successfully',
     },
-    DELETE:{
-      SUCCESS:{
+    DELETE: {
+      SUCCESS: {
         code: 'ROLE_DELETED',
         message: 'Role deleted successfully',
       },
-      fail:{
-        code:'ROLE_DELETE_FAILED',
-        message:"Role failed to delete"
+      fail: {
+        code: 'ROLE_DELETE_FAILED',
+        message: "Role failed to delete"
       }
     },
     NOTFOUND: {
       code: 'ROLE_NOT_FOUND',
       message: 'Role not found',
     },
-    UPDATED:{
-      code:'ROLE_UPDATED',
-      message:'Role updated successfully'
+    UPDATED: {
+      code: 'ROLE_UPDATED',
+      message: 'Role updated successfully'
     }
 
   },
