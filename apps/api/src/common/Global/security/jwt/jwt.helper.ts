@@ -53,7 +53,6 @@ export class JwtHelper {
       const userId = BigInt(decoded.sub);
 
       const user = await this.userRepository.findById(userId);
-
       if (!user) return null;
       if (user.jwtSecret !== decoded.jwtSecret) return null;
 

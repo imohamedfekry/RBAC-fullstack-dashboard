@@ -4,6 +4,10 @@ export const RESPONSE_MESSAGES = {
       code: 'LOGIN_SUCCESS',
       message: 'Login completed successfully.',
     },
+    LOGOUT_SUCCESS: {
+      code: 'LOGOUT_SUCCESS',
+      message: 'Logout completed successfully.',
+    },
     INVALID_CREDENTIALS: {
       code: 'INVALID_CREDENTIALS',
       message: 'Invalid email or password.',

@@ -7,6 +7,7 @@ import { verifyHash } from 'src/common/Global/security';
 import { Response } from 'express';
 import { JwtHelper } from 'src/common/Global/security/jwt/jwt.helper';
 import { nextSnowflakeId } from 'src/common/utils/snowflake';
+import { AuthenticatedRequest } from 'src/common/utils/types';
 
 @Injectable()
 export class AuthService {
@@ -54,5 +55,13 @@ export class AuthService {
       maxAge: 5 * 24 * 60 * 60 * 1000,
     });
     return success(RESPONSE_MESSAGES.AUTH.LOGIN_SUCCESS);
+  }
+  async logout(req: AuthenticatedRequest, res: Response) {
+    await this.userRepository.update(req.user.id, {
+      jwtSecret: null
+    })
+    res.clearCookie('Authorization');
+    res.clearCookie('refreshToken');
+    return success(RESPONSE_MESSAGES.AUTH.LOGOUT_SUCCESS);
   }
 }
